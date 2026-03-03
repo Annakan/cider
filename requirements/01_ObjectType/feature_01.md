@@ -2,7 +2,7 @@ Read this file, ask any questions you have, then produce a implementation plan i
 
 # Goal
 
-We need to create a new type "object" or "struct" in the available field types in cider.
+We need to create a new type "struct" in the available field types in cider.
 
 This type is a json/yaml object stored as a string in the database (maybe two strings because of schema, see below).
 
@@ -15,7 +15,7 @@ Since Cider already uses monaco we could use monaco_yaml to provide editing capa
 
 Optionally, the object could be linked to a json schema to validate the object, so we would need to add a new field "schema" to the object type that would contain the reference to the schema id.
 
-That means we would require a new branch of main item tree with "schemas" where we would store the json schemas (each schema is a simple text field with an id/name). I should be at the same level than global-style
+That means we would require a new branch of main item tree with "schemas" where we would store the json schemas (each schema is a simple text field with an id/name). I should be at the same level than `global-style`
 
 The schema would be a json schema (https://json-schema.org/) or yaml schema (https://www.asdf-format.org/projects/asdf-standard/en/1.0.2/schemas/yaml_schema.html) if that is supported by monaco_yaml 
 
