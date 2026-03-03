@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="755038ed-c148-4448-a461-98755f6b9a99" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/requirements/01_ObjectType/feature_01.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/card-preview/card-preview.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/card-preview/card-preview.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/card-preview/card-preview.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/card-preview/card-preview.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/data-services/indexed-db/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/data-services/indexed-db/db.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/data-services/services/card-attributes.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/data-services/services/card-attributes.service.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/data-services/services/card-attributes.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/data-services/services/card-attributes.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/data-services/services/cards.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/data-services/services/cards.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/data-services/types/card-attribute.type.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/data-services/types/card-attribute.type.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/data-services/types/field-type.type.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/data-services/types/field-type.type.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/entity-dialog/entity-dialog.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/entity-dialog/entity-dialog.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/entity-spreadsheet/entity-spreadsheet.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/entity-spreadsheet/entity-spreadsheet.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/entity-table/entity-table.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/entity-table/entity-table.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/game-simulator/game-simulator.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/game-simulator/game-simulator.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/shared/components/dropdown-option-editor/dropdown-option-editor.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/shared/components/dropdown-option-editor/dropdown-option-editor.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/shared/components/dropdown-option-editor/dropdown-option-editor.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/shared/components/dropdown-option-editor/dropdown-option-editor.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/shared/extensions/monaco-languages.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/shared/extensions/monaco-languages.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/shared/pipes/template-to-html.pipe.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/shared/pipes/template-to-html.pipe.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/shared/utils/xlsx-utils.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/shared/utils/xlsx-utils.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cider-app/src/app/shared/utils/xlsx-utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/cider-app/src/app/shared/utils/xlsx-utils.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements/ExtendedOptions/feature.md" beforeDir="false" afterPath="$PROJECT_DIR$/requirements/02_ExtendedOptions/feature_02.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements/ExtendedOptions/plan.md" beforeDir="false" afterPath="$PROJECT_DIR$/requirements/02_ExtendedOptions/plan.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="398" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="FlaskConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass">
+    <envs>
+      <env key="FLASK_APP" value="app" />
+    </envs>
+    <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform)); sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;from flask.cli import ScriptInfo, NoAppException&#10;for module in [&quot;main.py&quot;, &quot;wsgi.py&quot;, &quot;app.py&quot;]:&#10;    try: locals().update(ScriptInfo(app_import_path=module, create_app=None).load_app().make_shell_context()); print(&quot;\nFlask App: %s&quot; % app.import_name); break&#10;    except NoAppException: pass" />
+    <option name="myEnvs">
+      <map>
+        <entry key="FLASK_APP" value="app" />
+      </map>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="3AMClPZazx7zyL6PfJC1idxI9eI" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+    <option name="showMembers" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;ai.playground.ignore.import.keys.banner.in.settings&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;AddingExtendedOption&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/gryom/Projects/cider&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;npm.start.executor&quot;: &quot;Run&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;/home/gryom/Projects/cider/cider-app/node_modules/typescript/lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager">
+    <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/cider-app/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="start" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.start" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-PY-253.31033.139" />
+        <option value="bundled-python-sdk-2653e85de345-6d6dccd035ac-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-253.31033.139" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="755038ed-c148-4448-a461-98755f6b9a99" name="Changes" comment="" />
+      <created>1772393203123</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772393203123</updated>
+      <workItem from="1772393204287" duration="7452000" />
+      <workItem from="1772483659903" duration="5994000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
