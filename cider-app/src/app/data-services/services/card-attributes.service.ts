@@ -30,10 +30,12 @@ export class CardAttributesService extends DecksChildService<CardAttribute, numb
           { value: FieldType.text, color: '#FFFFFF' },
           { value: FieldType.dropdown, color: '#FFFFFF' },
           { value: FieldType.numeric, color: '#FFFFFF' },
-          { value: FieldType.checkbox, color: '#FFFFFF' }
+          { value: FieldType.checkbox, color: '#FFFFFF' },
+          { value: FieldType.struct, color: '#FFFFFF' }
         ]
       },
       { field: 'options', header: 'Options', type: FieldType.dropdownOptions, visible: (e) => e.type === FieldType.dropdown },
+      { field: 'schemaId', header: 'Schema', type: FieldType.numeric, visible: (e) => e.type === FieldType.struct },
       { field: 'width', header: 'Width', type: FieldType.numeric },
       { field: 'order', header: 'Order', type: FieldType.numeric }
     ]);

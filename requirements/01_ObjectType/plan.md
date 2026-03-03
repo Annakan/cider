@@ -400,3 +400,6 @@ Phases 1, 2, and 4 are independent and can be done in parallel. Phase 3 depends 
 | 1 | **`oatear-longtable` cell interaction** | No cell-click output exists. Using readonly cells + DOM `(dblclick)` on wrapper + `activeCell` signal. See §3.1. |
 | 2 | **Schema MIME type** | Using `application/schema+json` (official IANA MIME for JSON Schema). Works with `DocumentsService.getAll({ mime: ... })` since it's a simple string equality filter on a Dexie index. |
 | 3 | **XLSX import/export** | Struct fields exported/imported as plain text cells (YAML string as-is). |
+
+
+

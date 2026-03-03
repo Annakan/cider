@@ -146,6 +146,9 @@ export class AppDB extends Dexie {
         this.version(10).stores({
             assetFolders: '++id, path',
         });
+        this.version(11).stores({
+            cardAttributes: '++id, deckId, name, [deckId+name], type, options, description, width, order, schemaId',
+        });
 
         // populate in a non-traditional way since the 'on populate' will not allow ajax calls
         this.on('ready', () => this.table(AppDB.DECKS_TABLE).count()

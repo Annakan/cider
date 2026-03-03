@@ -4,5 +4,6 @@ export enum FieldType {
     dropdownOptions = 'dropdown-options',
     numeric = 'numeric',
     checkbox = 'checkbox',
-    file = 'file'
+    file = 'file',
+    struct = 'struct'
 }

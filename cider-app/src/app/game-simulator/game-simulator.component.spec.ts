@@ -3,6 +3,7 @@ import { GameSimulatorComponent } from './game-simulator.component';
 import { DecksService } from '../data-services/services/decks.service';
 import { CardsService } from '../data-services/services/cards.service';
 import { CardTemplatesService } from '../data-services/services/card-templates.service';
+import { GameSimulatorStateService } from './game-simulator-state.service';
 import { TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 
@@ -24,11 +25,19 @@ describe('GameSimulatorComponent', () => {
     decksServiceSpy.getAll.and.returnValue(Promise.resolve([]));
     cardsServiceSpy.getAll.and.returnValue(Promise.resolve([]));
 
+    const gameStateServiceSpy = jasmine.createSpyObj('GameSimulatorStateService', ['resetGame'], {
+      initialized: true,
+      stacks: [],
+      field: { name: 'Field', cards: [] },
+      discard: null
+    });
+
     component = new GameSimulatorComponent(
       decksServiceSpy,
       cardsServiceSpy,
       translateServiceSpy,
-      cardTemplatesServiceSpy
+      cardTemplatesServiceSpy,
+      gameStateServiceSpy
     );
 
     // Manually trigger initialization if needed, but constructor called resetGame which calls services
@@ -55,8 +64,8 @@ describe('GameSimulatorComponent', () => {
       deletable: false
     } as any;
 
-    component.stacks = [targetStack, discardStack];
-    component.discard = discardStack;
+    (component as any).gameStateService.stacks = [targetStack, discardStack];
+    (component as any).gameStateService.discard = discardStack;
     component['draggingStack'] = true;
     component['hoveredItem'] = targetStack;
 
@@ -110,7 +119,7 @@ describe('GameSimulatorComponent', () => {
       deletable: true
     } as any;
 
-    component.stacks = [targetStack, sourceStack];
+    (component as any).gameStateService.stacks = [targetStack, sourceStack];
     // component.discard is undefined or different
     component['draggingStack'] = true;
     component['hoveredItem'] = targetStack;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, ViewChild, WritableSignal } from '@angular/core';
 import { CardsService } from '../data-services/services/cards.service';
 import { CardAttributesService } from '../data-services/services/card-attributes.service';
 import { ThemeService } from '../data-services/theme/theme.service';
@@ -12,13 +12,14 @@ import { FieldType } from '../data-services/types/field-type.type';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { TranslateModule } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
+import { StructEditorDialogComponent } from '../shared/components/struct-editor-dialog/struct-editor-dialog.component';
 
 @Component({
     selector: 'app-entity-spreadsheet',
     templateUrl: './entity-spreadsheet.component.html',
     styleUrls: ['./entity-spreadsheet.component.scss'],
     standalone: true,
-    imports: [SpreadsheetComponent, ProgressBarModule, TranslateModule, CommonModule]
+    imports: [SpreadsheetComponent, ProgressBarModule, TranslateModule, CommonModule, StructEditorDialogComponent]
 })
 export class EntitySpreadsheetComponent implements OnInit, OnDestroy {
     data: WritableSignal<Cell[][]> = signal([]);
@@ -26,6 +27,14 @@ export class EntitySpreadsheetComponent implements OnInit, OnDestroy {
     theme: WritableSignal<SpreadsheetTheme> = signal(longLight);
     isLoading: WritableSignal<boolean> = signal(false);
 
+    structEditorVisible: boolean = false;
+    structEditorValue: string = '';
+    structEditorHeader: string = 'Edit Struct (YAML)';
+    private structEditingCoords: { row: number; col: number } | null = null;
+
+    @ViewChild(SpreadsheetComponent) spreadsheet!: SpreadsheetComponent;
+
+    private structFields: Set<string> = new Set();
     private lookups: Map<string, Map<string, number>> = new Map(); // Name -> ID
     private reverseLookups: Map<string, Map<number, string>> = new Map(); // ID -> Name
 
@@ -114,11 +123,16 @@ export class EntitySpreadsheetComponent implements OnInit, OnDestroy {
 
             const relatedAttribute = this.attributes.find(a => a.name === f.header);
 
+            const isStruct = f.type === FieldType.struct;
+            if (isStruct) {
+                this.structFields.add(f.field as string);
+            }
+
             return {
                 name: f.header,
                 field: f.field as string,
                 width: ((f.width as any) === 'auto' || !f.width) ? 135 : f.width,
-                readOnly: f.field === 'id',
+                readOnly: f.field === 'id' || isStruct,
                 editor: editor,
                 options: options,
                 description: f.description,
@@ -176,6 +190,40 @@ export class EntitySpreadsheetComponent implements OnInit, OnDestroy {
 
     onDataChanged(newData: Cell[][]): void {
         this.dataChangeSubject.next(newData);
+    }
+
+    onSpreadsheetDblClick(event: MouseEvent): void {
+        if (!this.spreadsheet) return;
+        const coords = this.spreadsheet.activeCell();
+        if (!coords) return;
+
+        const config = this.columnConfig();
+        if (coords.col < 0 || coords.col >= config.length) return;
+
+        const colField = config[coords.col].field;
+        if (!this.structFields.has(colField)) return;
+
+        const currentData = this.data();
+        if (coords.row < 0 || coords.row >= currentData.length) return;
+
+        const cellValue = currentData[coords.row][coords.col]?.value;
+        this.structEditorValue = (cellValue !== undefined && cellValue !== null) ? String(cellValue) : '';
+        this.structEditorHeader = `Edit ${config[coords.col].name} (YAML)`;
+        this.structEditingCoords = { row: coords.row, col: coords.col };
+        this.structEditorVisible = true;
+    }
+
+    onStructValueSaved(newValue: string): void {
+        if (!this.structEditingCoords) return;
+        const { row, col } = this.structEditingCoords;
+
+        const currentData = this.data();
+        if (row >= 0 && row < currentData.length && col >= 0 && col < currentData[row].length) {
+            currentData[row][col] = { ...currentData[row][col], value: newValue };
+            this.data.set([...currentData]);
+            this.onDataChanged(currentData);
+        }
+        this.structEditingCoords = null;
     }
 
     private async processDataChange(newData: Cell[][]): Promise<void> {

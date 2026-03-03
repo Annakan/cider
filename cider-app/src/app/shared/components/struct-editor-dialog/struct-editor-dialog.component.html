@@ -1,0 +1,23 @@
+<p-dialog
+  [(visible)]="visible"
+  [header]="header"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '60vw', height: '70vh' }"
+  (onHide)="onCancel()">
+  <div class="struct-editor-container">
+    <ngx-monaco-editor
+      class="struct-monaco-editor"
+      [options]="editorOptions"
+      [(ngModel)]="editValue">
+    </ngx-monaco-editor>
+  </div>
+  <ng-template #footer>
+    <div class="struct-editor-footer">
+      <p-button label="Cancel" severity="secondary" (onClick)="onCancel()"></p-button>
+      <p-button label="Save" (onClick)="onSave()"></p-button>
+    </div>
+  </ng-template>
+</p-dialog>

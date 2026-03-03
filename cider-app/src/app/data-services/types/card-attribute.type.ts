@@ -11,4 +11,5 @@ export interface CardAttribute {
     width?: number | 'auto';
     order?: number;
     isSystem?: boolean;
+    schemaId?: number;
 }

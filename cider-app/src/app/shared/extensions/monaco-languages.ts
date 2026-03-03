@@ -50,7 +50,7 @@ export default class MonacoLanguages {
                     };
                 });
 
-                const snippetKeys = ['if', 'repeat', 'each', 'with', 'unless', 'else'];
+                const snippetKeys = ['if', 'repeat', 'each', 'with', 'unless', 'else', 'yaml'];
                 const snippetSuggestions = snippetKeys.map(snippet => {
                     return {
                         label: '#' + snippet,

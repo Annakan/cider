@@ -68,6 +68,8 @@ export class DocumentComponent implements OnInit, OnDestroy {
       this.editorOptions.language = 'css-handlebars';
     } else if (this.textDocument.mime === 'application/javascript') {
       this.editorOptions.language = 'javascript';
+    } else if (this.textDocument.mime === 'application/schema+json') {
+      this.editorOptions.language = 'json';
     } else {
       this.editorOptions.language = 'markdown';
     }

@@ -2,6 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import StringUtils from '../utils/string-utils';
 import * as Handlebars from 'handlebars';
+import * as yaml from 'js-yaml';
 
 @Pipe({
   name: 'handlebars',
@@ -252,6 +253,47 @@ export class HandlebarsPipe implements PipeTransform {
      */
     Handlebars.registerHelper('abs', function (a) {
       return Math.abs(a);
+    });
+
+    /***********************************
+     * YAML / Struct Helpers
+     ***********************************/
+
+    /**
+     * {{get (parseyaml card.stats) "attack"}}
+     */
+    Handlebars.registerHelper('parseyaml', function (yamlString) {
+      if (!yamlString) return {};
+      try {
+        return yaml.load(yamlString);
+      } catch (e) {
+        return {};
+      }
+    });
+
+    /**
+     * {{#yaml card.stats}}
+     *   <div>{{attack}}</div>
+     *   <div>{{defense}}</div>
+     * {{/yaml}}
+     */
+    Handlebars.registerHelper('yaml', function (yamlString: string, options: any) {
+      if (!yamlString) return '';
+      try {
+        const parsed = yaml.load(yamlString);
+        return options.fn(parsed);
+      } catch (e) {
+        return '';
+      }
+    });
+
+    /**
+     * {{get someObject "key"}}
+     * {{get (parseyaml card.stats) "attack"}}
+     */
+    Handlebars.registerHelper('get', function (obj: any, key: string) {
+      if (!obj || !key) return '';
+      return obj[key];
     });
 
   }

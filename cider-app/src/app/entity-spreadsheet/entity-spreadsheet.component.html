@@ -1,4 +1,4 @@
-<div class="spreadsheet-wrapper">
+<div class="spreadsheet-wrapper" (dblclick)="onSpreadsheetDblClick($event)">
     @if (data().length > 0 && columnConfig().length > 0) {
     <long-spreadsheet [data]="data" [columnConfig]="columnConfig" [theme]="theme()" [height]="'100%'"
         [showLoading]="isLoading()" (onDataChange)="onDataChanged($event)" (onColumnChange)="onColumnChanged($event)">
@@ -10,3 +10,10 @@
     </div>
     }
 </div>
+
+<app-struct-editor-dialog
+    [(visible)]="structEditorVisible"
+    [value]="structEditorValue"
+    [header]="structEditorHeader"
+    (valueSaved)="onStructValueSaved($event)">
+</app-struct-editor-dialog>

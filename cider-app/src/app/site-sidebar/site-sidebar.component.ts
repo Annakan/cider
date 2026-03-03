@@ -208,6 +208,89 @@ export class SiteSidebarComponent implements OnInit {
       });
 
       // -----------------------------------------------
+      // Fetch schema documents
+      // -----------------------------------------------
+      const schemaDocuments = await this.documentsService.getAll({ mime: 'application/schema+json' });
+      if (schemaDocuments.length > 0) {
+        const schemaChildren: TreeNode[] = schemaDocuments.map(doc => ({
+          label: doc.name,
+          data: {
+            url: '/documents/' + doc.id,
+            id: doc.id,
+            type: 'document',
+            contextMenu: [
+              {
+                label: this.translate.instant('sidebar.add-new-schema'),
+                icon: 'pi pi-plus',
+                command: () => {
+                  this.openCreateSchemaDialog();
+                }
+              },
+              {
+                label: this.translate.instant('sidebar.edit-rename-document'),
+                icon: 'pi pi-pencil',
+                command: () => {
+                  this.openEditDialog(this.documentsService, doc.id,
+                    this.translate.instant('sidebar.edit-rename-document'));
+                }
+              },
+              {
+                label: this.translate.instant('sidebar.delete-document'),
+                icon: 'pi pi-trash',
+                command: () => {
+                  this.openDeleteDialog(doc.id, this.documentsService);
+                }
+              }
+            ],
+          },
+          icon: 'pi pi-file',
+          styleClass: 'schema-file',
+          draggable: false,
+          droppable: false
+        }));
+
+        updatedFiles.push({
+          label: this.translate.instant('sidebar.schemas'),
+          data: {
+            contextMenu: [
+              {
+                label: this.translate.instant('sidebar.add-new-schema'),
+                icon: 'pi pi-plus',
+                command: () => {
+                  this.openCreateSchemaDialog();
+                }
+              }
+            ],
+          },
+          icon: 'pi pi-database',
+          children: schemaChildren,
+          expanded: true,
+          draggable: false,
+          droppable: false
+        });
+      } else {
+        updatedFiles.push({
+          label: this.translate.instant('sidebar.schemas'),
+          data: {
+            contextMenu: [
+              {
+                label: this.translate.instant('sidebar.add-new-schema'),
+                icon: 'pi pi-plus',
+                command: () => {
+                  this.openCreateSchemaDialog();
+                }
+              }
+            ],
+          },
+          icon: 'pi pi-database',
+          children: [],
+          expanded: true,
+          draggable: false,
+          droppable: false
+        });
+      }
+
+      // -----------------------------------------------
       // Fetch decks and their templates
       // -----------------------------------------------
       await this.decksService.getAll().then(decks => {
@@ -676,6 +759,17 @@ export class SiteSidebarComponent implements OnInit {
       content: defaultContent,
     } as any;
     this.openCreateDialog(service, dialogTitle, this.entity);
+  }
+
+  public openCreateSchemaDialog() {
+    const randomName = `schema-${Math.random().toString(36).substr(2, 9)}`;
+    this.entity = {
+      name: randomName,
+      mime: 'application/schema+json',
+      content: '{\n  "type": "object",\n  "properties": {}\n}',
+    } as any;
+    this.openCreateDialog(this.documentsService,
+      this.translate.instant('sidebar.create-new-schema'), this.entity);
   }
 
   public openCreateDialog(service: EntityService<any, any>, dialogTitle: string, entity?: any) {

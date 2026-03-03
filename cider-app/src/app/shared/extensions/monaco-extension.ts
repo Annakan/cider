@@ -1,6 +1,7 @@
 import { NgxMonacoEditorConfig } from 'ngx-monaco-editor-v2';
 import MonacoLanguages, { DocumentColorAdapter } from './monaco-languages';
 import MonacoThemes from './monaco-themes';
+import MonacoYamlTokenizer from './monaco-yaml-tokenizer';
 
 export default class MonacoExtension {
 
@@ -16,6 +17,9 @@ export default class MonacoExtension {
         // create the css-handlebars language
         MonacoExtension.registerCssHandlebars(monaco);
         MonacoThemes.defineVsDarkExtendedTheme(monaco);
+
+        // register YAML language with Monarch tokenizer
+        MonacoYamlTokenizer.register(monaco);
 
         // extend the handlebars language
         const handlebarsCompletionProvider = MonacoLanguages.createHandlebarsCompletionProvider(monaco);

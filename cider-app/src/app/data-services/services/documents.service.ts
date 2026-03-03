@@ -48,7 +48,7 @@ export class DocumentsService extends IndexedDbService<Document, number> {
     const fileName = StringUtils.lastDirectoryFromUrl(absPath);
     const nameSplit = StringUtils.splitNameAndExtension(fileName);
 
-    const supportedExtensions = ['md', 'markdown', 'css'];
+    const supportedExtensions = ['md', 'markdown', 'css', 'json', 'yaml', 'yml'];
     if (!supportedExtensions.includes(nameSplit.extension.toLowerCase())) {
       return;
     }
@@ -86,7 +86,7 @@ export class DocumentsService extends IndexedDbService<Document, number> {
 
     const fileName = StringUtils.lastDirectoryFromUrl(absPath);
     const nameSplit = StringUtils.splitNameAndExtension(fileName);
-    const supportedExtensions = ['md', 'markdown', 'css'];
+    const supportedExtensions = ['md', 'markdown', 'css', 'json', 'yaml', 'yml'];
     if (!supportedExtensions.includes(nameSplit.extension.toLowerCase())) return;
 
     const items = await this.getAll({ name: nameSplit.name });
