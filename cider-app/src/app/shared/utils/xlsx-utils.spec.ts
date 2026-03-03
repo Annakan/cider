@@ -7,18 +7,22 @@ import * as XLSX from 'xlsx';
 
 describe('XlsxUtils', () => {
 
-    it('should serialize objects to JSON for dropdown and dropdownOptions types during export', () => {
+    it('should serialize objects to JSON for dropdown, string-dropdown and options types during export', () => {
         const columns: EntityField<any>[] = [
             { field: 'name', header: 'Name', type: FieldType.text },
             { field: 'options', header: 'Options', type: FieldType.dropdownOptions },
-            { field: 'type', header: 'Type', type: FieldType.dropdown }
+            { field: 'type', header: 'Type', type: FieldType.dropdown },
+            { field: 'rarity', header: 'Rarity', type: FieldType.stringDropdown },
+            { field: 'stringOptions', header: 'String Options', type: FieldType.stringDropdownOptions }
         ];
 
         const records = [
             {
                 name: 'Test',
                 options: [{ value: 'A', color: '#FFF' }, { value: 'B', color: '#000' }],
-                type: { value: 'some-type', color: '#111' }
+                type: { value: 'some-type', color: '#111' },
+                rarity: 'Epic',
+                stringOptions: [{ value: 'Epic', color: '#111', stringValue: 'Legendary drop table' }]
             }
         ];
 
@@ -42,6 +46,8 @@ describe('XlsxUtils', () => {
         expect(csv).toContain('Name');
         expect(csv).toContain('Options');
         expect(csv).toContain('Type');
+        expect(csv).toContain('Rarity');
+        expect(csv).toContain('String Options');
 
         // Check that JSON string is present and escaped properly for CSV (usually double quotes)
         // CSV output from XLSX: "Test","[{""value"":""A"",""color"":""#FFF""},{""value"":""B"",""color"":""#000""}]",...
@@ -51,6 +57,7 @@ describe('XlsxUtils', () => {
         // Expect escaped quotes for CSV
         expect(csv).toContain('""value"":""A""');
         expect(csv).toContain('""color"":""#FFF""');
+        expect(csv).toContain('""stringValue"":""Legendary drop table""');
     });
 
 });

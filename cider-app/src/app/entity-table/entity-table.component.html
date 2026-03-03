@@ -73,7 +73,7 @@
         </p-columnFilter>
       </th>
       }
-      @case (!col.hidden && col.type === FieldType.dropdown
+      @case (!col.hidden && (col.type === FieldType.dropdown || col.type === FieldType.stringDropdown)
       && col.service === undefined) {
       <th [class]="col.type">
         <p-columnFilter [field]="col.field" matchMode="in" [showMenu]="false">
@@ -86,6 +86,9 @@
       </th>
       }
       @case (!col.hidden && col.type === FieldType.dropdownOptions) {
+      <th></th>
+      }
+      @case (!col.hidden && col.type === FieldType.stringDropdownOptions) {
       <th></th>
       }
       @case (!col.hidden && col.type === FieldType.file) {
@@ -143,16 +146,16 @@
       </td>
       }
       }
-      @case (!col.hidden && col.type === FieldType.dropdown
+      @case (!col.hidden && (col.type === FieldType.dropdown || col.type === FieldType.stringDropdown)
       && col.service === undefined) {
       @if (!allowEditing || !showInlineEditor || (rowData.isSystem && ['name', 'type', 'description',
-      'options'].includes(col.field))) {
+      'options', 'stringOptions'].includes(col.field))) {
       <td [class]="col.type">
         <div class="base" [class.disabled-look]="rowData.isSystem && col.field === 'type'">{{rowData[col.field]}}</div>
       </td>
       }
       @if (allowEditing && showInlineEditor && (!rowData.isSystem || !['name', 'type', 'description',
-      'options'].includes(col.field))) {
+      'options', 'stringOptions'].includes(col.field))) {
       <td [pEditableColumn]="rowData[col.field]" [pEditableColumnField]="col.field" [class]="col.type">
         <p-cellEditor>
           <ng-template pTemplate="input">
@@ -172,19 +175,24 @@
         <div class="base disabled-look">{{(rowData[col.field] || []).length}} Options</div>
       </td>
       }
+      @case (!col.hidden && col.type === FieldType.stringDropdownOptions) {
+      <td [class]="col.type">
+        <div class="base disabled-look">{{(rowData[col.field] || []).length}} Options</div>
+      </td>
+      }
       @case (!col.hidden && col.type === FieldType.file) {
       <td class="preview-image" [class]="col.type"><img [src]="rowData[col.field] | fileUrl" /></td>
       }
       @default {
       @if (!allowEditing || !showInlineEditor || (rowData.isSystem && ['name', 'type', 'description',
-      'options'].includes(col.field))) {
+      'options', 'stringOptions'].includes(col.field))) {
       <td [class]="col.type">
         <textarea pTextarea [(ngModel)]="rowData[col.field]" [rows]="1" [cols]="12" [autoResize]="true"
           [disabled]="true"></textarea>
       </td>
       }
       @if (allowEditing && showInlineEditor && (!rowData.isSystem || !['name', 'type', 'description',
-      'options'].includes(col.field))) {
+      'options', 'stringOptions'].includes(col.field))) {
       <td [pEditableColumn]="rowData[col.field]" [pEditableColumnField]="col.field" [class]="col.type">
         <p-cellEditor>
           <ng-template pTemplate="input">

@@ -21,13 +21,32 @@ export class CardToHtmlPipe implements PipeTransform {
     let self = this;
   }
 
-  transform(template: CardTemplate, card: Card, assetUrls?: any, uuid?: string): SafeHtml {
+  private withStringValues(card: Card,
+    stringOptionMappings?: { [field: string]: { [selectedValue: string]: string } }): Card {
+    if (!stringOptionMappings || Object.keys(stringOptionMappings).length === 0) {
+      return card;
+    }
+
+    const enrichedCard: any = { ...card };
+    Object.entries(stringOptionMappings).forEach(([field, optionMappings]) => {
+      const value = String((card as any)[field] || '');
+      enrichedCard[`${field}String`] = optionMappings[value] || '';
+    });
+
+    return enrichedCard as Card;
+  }
+
+  transform(template: CardTemplate, card: Card, assetUrls?: any, uuid?: string,
+    stringOptionMappings?: { [field: string]: { [selectedValue: string]: string } }): SafeHtml {
     if (!template || !card) {
       return '';
     }
+
+    const cardWithStringValues = this.withStringValues(card, stringOptionMappings);
+
     return this.safeHtmlAndStyle(card, 
-      this.executeHandlebars(template.html, card, assetUrls), 
-      this.executeHandlebars(template.css, card, assetUrls),
+      this.executeHandlebars(template.html, cardWithStringValues, assetUrls), 
+      this.executeHandlebars(template.css, cardWithStringValues, assetUrls),
       uuid);
   }
 

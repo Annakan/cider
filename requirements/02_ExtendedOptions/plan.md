@@ -205,3 +205,47 @@ This keeps UX predictable, easier to validate, and easier to consume in Handleba
 - Existing projects (old dropdown formats) continue to load and work.
 - Web and Electron save/load/import/export all preserve string-dropdown data.
 - Automated tests cover parsing, migration behavior, and template resolution.
+
+---
+
+## Implementation Actions Summary
+
+1. **Attribute model and service support**
+   - Added `stringOptions` to `CardAttribute` while keeping legacy `options` unchanged.
+   - Extended `CardAttributesService` type choices with `string-dropdown` and `string-dropdown-options`.
+   - Added normalization for both dropdown families, including default `stringValue: ''` backfill.
+
+2. **Cards field mapping**
+   - Updated `CardsService` to parse `stringOptions` for `string-dropdown` attributes.
+   - Continued exposing select options as `{ value, color }` for card editing compatibility.
+
+3. **Dropdown option editor UI**
+   - Added editor mode support (`dropdown` vs `string-dropdown`).
+   - Added textarea editing for `stringValue` in `string-dropdown` mode.
+   - Kept strict template typing with explicit `getStringValue` / `setStringValue` helpers.
+
+4. **Dialogs, tables, and spreadsheet**
+   - Updated entity dialog to render `stringDropdown` and `stringDropdownOptions` paths.
+   - Updated entity table filters/editing/rendering for `string-dropdown` and `stringOptions`.
+   - Updated spreadsheet editor mapping so `string-dropdown` uses dropdown editing behavior.
+
+5. **Handlebars render pipeline (`card.*String`)**
+   - Added string option mapping loading in `CardPreviewComponent`.
+   - Passed mappings into render flow and hash generation.
+   - Updated `CardToHtmlPipe` to enrich context with derived `${field}String` values.
+
+6. **Database migration and runtime normalization**
+   - Added Dexie schema version **11** with additive migration for `stringOptions`.
+   - Migration normalizes `string-dropdown` options and backfills missing `stringValue` to `''`.
+   - Added runtime normalization guard in `initializeData` for `string-dropdown` options.
+
+7. **Import/export, simulator, and Monaco hints**
+   - Extended CSV import/export handling for `stringDropdown` and `stringDropdownOptions`.
+   - Updated simulator split-by-attribute to include `string-dropdown` fields.
+   - Added Monaco completion hint for derived `card.<attributeName>String` usage.
+
+8. **Tests and verification**
+   - Extended `card-attributes.service.spec.ts` for string-dropdown normalization/backfill.
+   - Extended `xlsx-utils.spec.ts` for `stringOptions` serialization assertions.
+   - Verified compilation with `npm run build` (successful).
+   - Focused test command is currently blocked by pre-existing `game-simulator.component.spec.ts` issues unrelated to this feature.

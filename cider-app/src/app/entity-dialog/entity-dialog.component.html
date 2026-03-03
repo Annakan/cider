@@ -17,7 +17,7 @@
     </div>
     }
     }
-    @case (!col.hidden && (col.visible ? col.visible(entity) : true) && col.type === FieldType.dropdown
+    @case (!col.hidden && (col.visible ? col.visible(entity) : true) && (col.type === FieldType.dropdown || col.type === FieldType.stringDropdown)
     && col.service === undefined) {
     <div class="p-field">
       <label [for]="col.field">{{col.header}}</label>
@@ -29,6 +29,14 @@
     <div class="p-field">
       <label [for]="col.field">{{col.header}}</label>
       <app-dropdown-option-editor [(ngModel)]="entity[col.field]" [id]="col.field"></app-dropdown-option-editor>
+    </div>
+    }
+
+    @case (!col.hidden && (col.visible ? col.visible(entity) : true) && col.type === FieldType.stringDropdownOptions) {
+    <div class="p-field">
+      <label [for]="col.field">{{col.header}}</label>
+      <app-dropdown-option-editor [(ngModel)]="entity[col.field]" [id]="col.field"
+        mode="string-dropdown"></app-dropdown-option-editor>
     </div>
     }
 

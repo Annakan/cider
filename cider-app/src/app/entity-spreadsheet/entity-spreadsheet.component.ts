@@ -133,6 +133,7 @@ export class EntitySpreadsheetComponent implements OnInit, OnDestroy {
         switch (type) {
             case FieldType.numeric: return 'numeric';
             case FieldType.dropdown: return 'dropdown';
+            case FieldType.stringDropdown: return 'dropdown';
             case FieldType.checkbox: return 'checkbox';
             default: return 'text';
         }

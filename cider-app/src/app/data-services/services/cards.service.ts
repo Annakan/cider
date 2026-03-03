@@ -10,6 +10,7 @@ import { DecksService } from './decks.service';
 import { CardAttribute } from '../types/card-attribute.type';
 import StringUtils from 'src/app/shared/utils/string-utils';
 import { DropdownOption } from '../types/dropdown-option.type';
+import { StringOption } from '../types/string-option.type';
 import { ElectronService } from '../electron/electron.service';
 import { ProjectStateService } from './project-state.service';
 import XlsxUtils from 'src/app/shared/utils/xlsx-utils';
@@ -100,30 +101,12 @@ export class CardsService extends DecksChildService<Card, number> {
   private cardAttributeToEntityField(attribute: CardAttribute) {
     let options: DropdownOption[] = [];
 
-    if (Array.isArray(attribute.options)) {
-      if (attribute.options.length > 0 && typeof attribute.options[0] === 'string') {
-        options = (attribute.options as unknown as string[]).map(o => ({ value: o, color: '#FFFFFF' }));
-      } else {
-        options = attribute.options as DropdownOption[];
-      }
-    } else if (attribute.options) {
-      const optsStr = attribute.options as string;
-      if (optsStr.trim().startsWith('[')) {
-        try {
-          const parsed = JSON.parse(optsStr);
-          if (Array.isArray(parsed)) {
-            if (parsed.length > 0 && typeof parsed[0] === 'string') {
-              options = parsed.map((o: string) => ({ value: o, color: '#FFFFFF' }));
-            } else {
-              options = parsed;
-            }
-          }
-        } catch (e) {
-          options = optsStr.split(',').map(o => ({ value: o.trim(), color: '#FFFFFF' }));
-        }
-      } else {
-        options = optsStr.split(',').map(o => ({ value: o.trim(), color: '#FFFFFF' }));
-      }
+    if (attribute.type === FieldType.stringDropdown) {
+      options = this.parseStringOptions(attribute.stringOptions).map(option => {
+        return { value: option.value, color: option.color };
+      });
+    } else {
+      options = this.parseDropdownOptions(attribute.options);
     }
 
     if (attribute.isSystem) {
@@ -179,5 +162,71 @@ export class CardsService extends DecksChildService<Card, number> {
 
   override getEntityName(entity: Card) {
     return entity.name;
+  }
+
+  private parseDropdownOptions(options: CardAttribute['options']): DropdownOption[] {
+    if (Array.isArray(options)) {
+      if (options.length > 0 && typeof options[0] === 'string') {
+        return (options as unknown as string[]).map(o => ({ value: o, color: '#FFFFFF' }));
+      }
+      return options as DropdownOption[];
+    }
+
+    if (!options || typeof options !== 'string') {
+      return [];
+    }
+
+    const optsStr = options;
+    if (optsStr.trim().startsWith('[')) {
+      try {
+        const parsed = JSON.parse(optsStr);
+        if (Array.isArray(parsed)) {
+          if (parsed.length > 0 && typeof parsed[0] === 'string') {
+            return parsed.map((o: string) => ({ value: o, color: '#FFFFFF' }));
+          }
+          return parsed as DropdownOption[];
+        }
+      } catch (e) {
+        return optsStr.split(',').map(o => ({ value: o.trim(), color: '#FFFFFF' }));
+      }
+    }
+    return optsStr.split(',').map(o => ({ value: o.trim(), color: '#FFFFFF' }));
+  }
+
+  private parseStringOptions(stringOptions: CardAttribute['stringOptions']): StringOption[] {
+    if (Array.isArray(stringOptions)) {
+      if (stringOptions.length > 0 && typeof stringOptions[0] === 'string') {
+        return (stringOptions as unknown as string[]).map(value => ({
+          value: value,
+          color: '#FFFFFF',
+          stringValue: ''
+        }));
+      }
+      return (stringOptions as any[]).map(option => ({
+        value: option?.value || '',
+        color: option?.color || '#FFFFFF',
+        stringValue: option?.stringValue || ''
+      }));
+    }
+
+    if (!stringOptions || typeof stringOptions !== 'string') {
+      return [];
+    }
+
+    const optionsStr = stringOptions.trim();
+    if (optionsStr.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(optionsStr);
+        return this.parseStringOptions(parsed as any);
+      } catch (e) {
+        // fallback to token parsing
+      }
+    }
+
+    return optionsStr.split(/\||,/).map(value => value.trim()).map(value => ({
+      value: value,
+      color: '#FFFFFF',
+      stringValue: ''
+    }));
   }
 }

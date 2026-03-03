@@ -1,9 +1,11 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormsModule } from '@angular/forms';
 import { DropdownOption } from 'src/app/data-services/types/dropdown-option.type';
+import { StringOption } from 'src/app/data-services/types/string-option.type';
 import { CommonModule } from '@angular/common';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 import { ButtonModule } from 'primeng/button';
 
 @Component({
@@ -11,7 +13,7 @@ import { ButtonModule } from 'primeng/button';
     templateUrl: './dropdown-option-editor.component.html',
     styleUrls: ['./dropdown-option-editor.component.scss'],
     standalone: true,
-    imports: [CommonModule, FormsModule, ColorPickerModule, InputTextModule, ButtonModule],
+    imports: [CommonModule, FormsModule, ColorPickerModule, InputTextModule, TextareaModule, ButtonModule],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -21,27 +23,26 @@ import { ButtonModule } from 'primeng/button';
     ]
 })
 export class DropdownOptionEditorComponent implements ControlValueAccessor {
-    options: DropdownOption[] = [];
+    @Input() mode: 'dropdown' | 'string-dropdown' = 'dropdown';
+
+    options: (DropdownOption | StringOption)[] = [];
 
     disabled = false;
 
     private onTouched = () => { };
-    private onChanged = (value: DropdownOption[]) => { };
+    private onChanged = (value: (DropdownOption | StringOption)[]) => { };
 
     constructor() { }
 
     writeValue(obj: any): void {
         if (obj) {
             if (Array.isArray(obj)) {
-                this.options = obj;
+                this.options = this.ensureOptionsShape(obj);
             } else if (typeof obj === 'string') {
-                // Fallback or legacy handling if needed, though service should handle this.
-                // Assuming the service converts everything to DropdownOption[] before passing here, 
-                // but let's be safe.
                 try {
                     const parsed = JSON.parse(obj);
                     if (Array.isArray(parsed)) {
-                        this.options = parsed;
+                        this.options = this.ensureOptionsShape(parsed);
                     }
                 } catch (e) {
                     this.options = [];
@@ -65,7 +66,11 @@ export class DropdownOptionEditorComponent implements ControlValueAccessor {
     }
 
     addOption() {
-        this.options.push({ value: '', color: '#ffffff' });
+        if (this.isStringDropdown()) {
+            this.options.push({ value: '', color: '#ffffff', stringValue: '' });
+        } else {
+            this.options.push({ value: '', color: '#ffffff' });
+        }
         this.onChange();
     }
 
@@ -77,5 +82,33 @@ export class DropdownOptionEditorComponent implements ControlValueAccessor {
     onChange() {
         this.onChanged(this.options);
         this.onTouched();
+    }
+
+    getStringValue(option: DropdownOption | StringOption): string {
+        return (option as StringOption).stringValue || '';
+    }
+
+    setStringValue(option: DropdownOption | StringOption, value: string): void {
+        (option as StringOption).stringValue = value;
+        this.onChange();
+    }
+
+    isStringDropdown(): boolean {
+        return this.mode === 'string-dropdown';
+    }
+
+    private ensureOptionsShape(options: any[]): (DropdownOption | StringOption)[] {
+        if (!this.isStringDropdown()) {
+            return options.map(option => ({
+                value: option?.value || '',
+                color: option?.color || '#ffffff'
+            }));
+        }
+
+        return options.map(option => ({
+            value: option?.value || '',
+            color: option?.color || '#ffffff',
+            stringValue: option?.stringValue || ''
+        }));
     }
 }

@@ -10,6 +10,7 @@ import { ProjectStateService } from './project-state.service';
 import XlsxUtils from 'src/app/shared/utils/xlsx-utils';
 import { PersistentPath } from '../types/persistent-path.type';
 import { firstValueFrom, groupBy, mergeMap, debounceTime, filter } from 'rxjs';
+import { StringOption } from '../types/string-option.type';
 
 @Injectable({
   providedIn: 'root'
@@ -29,11 +30,13 @@ export class CardAttributesService extends DecksChildService<CardAttribute, numb
         options: [
           { value: FieldType.text, color: '#FFFFFF' },
           { value: FieldType.dropdown, color: '#FFFFFF' },
+          { value: FieldType.stringDropdown, color: '#FFFFFF' },
           { value: FieldType.numeric, color: '#FFFFFF' },
           { value: FieldType.checkbox, color: '#FFFFFF' }
         ]
       },
       { field: 'options', header: 'Options', type: FieldType.dropdownOptions, visible: (e) => e.type === FieldType.dropdown },
+      { field: 'stringOptions', header: 'String Options', type: FieldType.stringDropdownOptions, visible: (e) => e.type === FieldType.stringDropdown },
       { field: 'width', header: 'Width', type: FieldType.numeric },
       { field: 'order', header: 'Order', type: FieldType.numeric }
     ]);
@@ -107,31 +110,90 @@ export class CardAttributesService extends DecksChildService<CardAttribute, numb
 
   override create(entity: CardAttribute, overrideParent?: boolean | undefined): Promise<CardAttribute> {
     const normalizedType = (entity.type as string)?.toLowerCase().trim();
+    if (normalizedType === FieldType.stringDropdown) {
+      entity.stringOptions = this.parseStringOptions(entity.stringOptions || entity.options);
+      return super.create(entity, overrideParent);
+    }
+
     if ((normalizedType === FieldType.dropdown || normalizedType === 'option') && entity.options) {
       if ((entity.type as string) !== FieldType.dropdown) {
         entity.type = FieldType.dropdown;
       }
 
-      if (typeof entity.options === 'string') {
-        const strOptions = entity.options as string;
-        try {
-          const parsed = JSON.parse(strOptions);
-          if (Array.isArray(parsed)) {
-            entity.options = parsed;
-            return super.create(entity, overrideParent);
-          }
-        } catch (e) {
-          // ignore error, treat as legacy string
-        }
-
-        const optionsList = strOptions.split('|').map(o => o.trim());
-
-        entity.options = optionsList.map(o => {
-          return { value: o, color: StringUtils.generateRandomColor() };
-        });
-      }
+      entity.options = this.parseDropdownOptions(entity.options);
     }
     return super.create(entity, overrideParent);
+  }
+
+  private parseDropdownOptions(options: CardAttribute['options']): { value: string; color: string }[] {
+    if (Array.isArray(options)) {
+      if (options.length > 0 && typeof options[0] === 'string') {
+        return (options as unknown as string[]).map(value => ({ value: value, color: StringUtils.generateRandomColor() }));
+      }
+      return options as { value: string; color: string }[];
+    }
+
+    if (!options || typeof options !== 'string') {
+      return [];
+    }
+
+    const optionsStr = options.trim();
+    if (optionsStr.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(optionsStr);
+        if (Array.isArray(parsed)) {
+          if (parsed.length > 0 && typeof parsed[0] === 'string') {
+            return parsed.map(value => ({ value: value, color: StringUtils.generateRandomColor() }));
+          }
+          return parsed;
+        }
+      } catch (e) {
+        // fallback to token parsing
+      }
+    }
+
+    return optionsStr.split(/\||,/).map(value => value.trim()).map(value => ({
+      value: value,
+      color: StringUtils.generateRandomColor()
+    }));
+  }
+
+  private parseStringOptions(stringOptions: CardAttribute['stringOptions'] | CardAttribute['options']): StringOption[] {
+    if (Array.isArray(stringOptions)) {
+      if (stringOptions.length > 0 && typeof stringOptions[0] === 'string') {
+        return (stringOptions as unknown as string[]).map(value => ({
+          value: value,
+          color: StringUtils.generateRandomColor(),
+          stringValue: ''
+        }));
+      }
+
+      return (stringOptions as any[]).map(option => ({
+        value: option?.value || '',
+        color: option?.color || StringUtils.generateRandomColor(),
+        stringValue: option?.stringValue || ''
+      }));
+    }
+
+    if (!stringOptions || typeof stringOptions !== 'string') {
+      return [];
+    }
+
+    const optionsStr = stringOptions.trim();
+    if (optionsStr.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(optionsStr);
+        return this.parseStringOptions(parsed as any);
+      } catch (e) {
+        // fallback to token parsing
+      }
+    }
+
+    return optionsStr.split(/\||,/).map(value => value.trim()).map(value => ({
+      value: value,
+      color: StringUtils.generateRandomColor(),
+      stringValue: ''
+    }));
   }
 
   async createSystemAttributes(deckId: number) {

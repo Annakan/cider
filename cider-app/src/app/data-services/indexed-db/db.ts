@@ -146,6 +146,52 @@ export class AppDB extends Dexie {
         this.version(10).stores({
             assetFolders: '++id, path',
         });
+        this.version(11).stores({
+            cardAttributes: '++id, deckId, [deckId+name], type, options, stringOptions, description, width, order',
+        }).upgrade(transaction => {
+            return transaction.table(AppDB.CARD_ATTRIBUTES_TABLE).toCollection().modify(attribute => {
+                if (attribute.type !== FieldType.stringDropdown) {
+                    return;
+                }
+
+                const normalizeOption = (option: any) => ({
+                    value: option?.value || '',
+                    color: option?.color || '#FFFFFF',
+                    stringValue: option?.stringValue || ''
+                });
+
+                if (Array.isArray(attribute.stringOptions)) {
+                    attribute.stringOptions = attribute.stringOptions.map((option: any) => normalizeOption(option));
+                    return;
+                }
+
+                if (typeof attribute.stringOptions === 'string') {
+                    const stringOptions = attribute.stringOptions.trim();
+                    if (stringOptions.startsWith('[')) {
+                        try {
+                            const parsed = JSON.parse(stringOptions);
+                            if (Array.isArray(parsed)) {
+                                attribute.stringOptions = parsed.map((option: any) => normalizeOption(option));
+                                return;
+                            }
+                        } catch (e) {
+                            // fallback below
+                        }
+                    }
+                }
+
+                if (Array.isArray(attribute.options)) {
+                    attribute.stringOptions = attribute.options.map((option: any) => ({
+                        value: option?.value || '',
+                        color: option?.color || '#FFFFFF',
+                        stringValue: ''
+                    }));
+                    return;
+                }
+
+                attribute.stringOptions = [];
+            });
+        });
 
         // populate in a non-traditional way since the 'on populate' will not allow ajax calls
         this.on('ready', () => this.table(AppDB.DECKS_TABLE).count()
@@ -394,6 +440,18 @@ export class AppDB extends Dexie {
                 if (changed) {
                     attribute.options = options;
                 }
+            }
+
+            if (attribute.type === FieldType.stringDropdown) {
+                if (!Array.isArray(attribute.stringOptions)) {
+                    attribute.stringOptions = [];
+                }
+
+                attribute.stringOptions = attribute.stringOptions.map((option: any) => ({
+                    value: option?.value || '',
+                    color: option?.color || '#FFFFFF',
+                    stringValue: option?.stringValue || ''
+                }));
             }
         });
 

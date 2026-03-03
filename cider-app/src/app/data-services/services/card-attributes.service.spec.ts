@@ -82,4 +82,39 @@ describe('CardAttributesService', () => {
     await service.create(entity);
     expect(entity.options).toEqual(options);
   });
+
+  it('should normalize string-dropdown options with default stringValue', async () => {
+    const entity: any = {
+      type: 'string-dropdown',
+      stringOptions: [
+        { value: 'Rare', color: '#111111' },
+        { value: 'Epic', color: '#222222', stringValue: 'Very uncommon' }
+      ]
+    };
+
+    spyOn(DecksChildService.prototype, 'create').and.returnValue(Promise.resolve(entity));
+
+    await service.create(entity);
+
+    expect(entity.stringOptions.length).toBe(2);
+    expect(entity.stringOptions[0]).toEqual({ value: 'Rare', color: '#111111', stringValue: '' });
+    expect(entity.stringOptions[1]).toEqual({ value: 'Epic', color: '#222222', stringValue: 'Very uncommon' });
+  });
+
+  it('should derive stringOptions from legacy options when type is string-dropdown', async () => {
+    const entity: any = {
+      type: 'string-dropdown',
+      options: 'Common|Rare'
+    };
+
+    spyOn(DecksChildService.prototype, 'create').and.returnValue(Promise.resolve(entity));
+
+    await service.create(entity);
+
+    expect(entity.stringOptions.length).toBe(2);
+    expect(entity.stringOptions[0].value).toBe('Common');
+    expect(entity.stringOptions[0].stringValue).toBe('');
+    expect(entity.stringOptions[1].value).toBe('Rare');
+    expect(entity.stringOptions[1].stringValue).toBe('');
+  });
 });

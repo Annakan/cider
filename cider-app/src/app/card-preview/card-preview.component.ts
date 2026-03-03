@@ -9,7 +9,9 @@ import { CardToHtmlPipe } from '../shared/pipes/template-to-html.pipe';
 import { ImageRendererService } from '../data-services/services/image-renderer.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import GeneralUtils from '../shared/utils/general-utils';
-import { error } from 'console';
+import { CardAttributesService } from '../data-services/services/card-attributes.service';
+import { FieldType } from '../data-services/types/field-type.type';
+import StringUtils from '../shared/utils/string-utils';
 
 @Component({
   selector: 'app-card-preview',
@@ -32,6 +34,7 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
   uuid: string = uuid();
   cachedImageUrl?: string;
   invalidTemplate: boolean = false;
+  stringOptionMappings: { [field: string]: { [selectedValue: string]: string } } = {};
   private isLoadedSubject: AsyncSubject<boolean>;
   private isCacheLoadedSubject: AsyncSubject<boolean>;
 
@@ -42,6 +45,7 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
     private element: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
     private cardToHtmlPipe: CardToHtmlPipe,
+    private cardAttributesService: CardAttributesService,
     private sanitizer: DomSanitizer) {
     this.isLoadedSubject = new AsyncSubject();
     this.isCacheLoadedSubject = new AsyncSubject();
@@ -67,6 +71,8 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
     this.assetsService.getAssetUrls().subscribe(assetUrls => {
       this.assetUrls = assetUrls;
     });
+
+    this.loadStringOptionMappings();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -80,6 +86,7 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
       this.initialHeight = 0;
       this.cachedImageUrl = undefined;
       this.invalidTemplate = false;
+      this.loadStringOptionMappings();
     }
 
     if (this.cache && this.assetUrls) {
@@ -105,8 +112,31 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
   }
 
   public getHash(): number {
-    const html = this.cardToHtmlPipe.transform(this.template, this.card, this.assetUrls);
+    const html = this.cardToHtmlPipe.transform(this.template, this.card, this.assetUrls, this.uuid, this.stringOptionMappings);
     return this.renderCacheService.calculateHash((html as any).changingThisBreaksApplicationSecurity);
+  }
+
+  private async loadStringOptionMappings(): Promise<void> {
+    const attributes = await this.cardAttributesService.getAll();
+    const mappings: { [field: string]: { [selectedValue: string]: string } } = {};
+
+    attributes
+      .filter(attribute => attribute.type === FieldType.stringDropdown)
+      .forEach(attribute => {
+        const field = StringUtils.toKebabCase(attribute.name);
+        mappings[field] = {};
+
+        if (!Array.isArray(attribute.stringOptions)) {
+          return;
+        }
+
+        (attribute.stringOptions as any[]).forEach(option => {
+          const value = option?.value || '';
+          mappings[field][value] = option?.stringValue || '';
+        });
+      });
+
+    this.stringOptionMappings = mappings;
   }
 
   public toImageUrl(): Promise<string> {

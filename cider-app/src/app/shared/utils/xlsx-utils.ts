@@ -26,7 +26,8 @@ export default class XlsxUtils {
                     return lookups.get(header.service)?.get(<any>record[header.field]);
                 }
 
-                if (header.type === FieldType.dropdown || header.type === FieldType.dropdownOptions) {
+                if (header.type === FieldType.dropdown || header.type === FieldType.dropdownOptions
+                    || header.type === FieldType.stringDropdown || header.type === FieldType.stringDropdownOptions) {
                     const value = record[header.field];
                     if (typeof value === 'object') {
                         return JSON.stringify(value);
@@ -96,7 +97,7 @@ export default class XlsxUtils {
                             console.warn(`Could not find value (${(<any>object)[header.header]}) for column: ${header.header}. Available keys:`, [...(lookups.get(header.service)?.values() || [])]);
                         }
 
-                    } else if (header.type === FieldType.dropdown) {
+                    } else if (header.type === FieldType.dropdown || header.type === FieldType.stringDropdown) {
                         const val = (<any>object)[header.header];
                         if (header.options && header.options.length > 0) {
                             const valid = header.options.some(o => o.value === val);
