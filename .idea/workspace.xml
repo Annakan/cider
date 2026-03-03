@@ -53,7 +53,7 @@
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
     "git-widget-placeholder": "AddingExtendedOption__away",
     "junie.onboarding.icon.badge.shown": "true",
-    "last_opened_file_path": "/home/gryom/Projects/cider",
+    "last_opened_file_path": "/home/gryom/Projects/cider/requirements/05_static_data",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -65,6 +65,14 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/requirements/05_static_data" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/requirements/01_ObjectType/doc" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration name="start" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/cider-app/package.json" />
@@ -98,7 +106,7 @@
       <option name="presentableId" value="Default" />
       <updated>1772393203123</updated>
       <workItem from="1772393204287" duration="7452000" />
-      <workItem from="1772483659903" duration="10222000" />
+      <workItem from="1772483659903" duration="23140000" />
     </task>
     <servers />
   </component>
