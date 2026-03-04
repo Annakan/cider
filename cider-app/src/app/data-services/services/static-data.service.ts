@@ -9,7 +9,13 @@ export class StaticDataService {
   private dataSubject = new BehaviorSubject<Record<string, any>>({});
 
   constructor(private documentsService: DocumentsService, private db: AppDB) {
-    this.db.onChange().subscribe(() => this.reload());
+    // OPTIMIZATION: Only reload YAML when the documents table changes.
+    // If this causes stale data issues, revert to: this.db.onChange().subscribe(() => this.reload());
+    this.db.onChange().subscribe((change: any) => {
+      if (change?.tableName === 'documents') {
+        this.reload();
+      }
+    });
     this.db.onLoad().subscribe(() => this.reload());
   }
 
