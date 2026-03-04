@@ -106,7 +106,7 @@ export default class StringUtils {
         }
         const mime = mimeTypes.getType(ext);
         if (!mime && (ext === 'yaml' || ext === 'yml')) {
-            return 'application/x-yaml';
+            return 'text/yaml';
         }
         return mime;
     }

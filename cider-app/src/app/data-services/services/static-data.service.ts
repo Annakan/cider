@@ -21,7 +21,8 @@ export class StaticDataService {
 
   private async reload() {
     try {
-      const yamlDocs = await this.documentsService.getAll({ mime: 'application/x-yaml' });
+      // Note: mime-wrapper returns 'text/yaml' for .yaml/.yml files
+      const yamlDocs = await this.documentsService.getAll({ mime: 'text/yaml' });
       const data: Record<string, any> = {};
       for (const doc of yamlDocs) {
         try {

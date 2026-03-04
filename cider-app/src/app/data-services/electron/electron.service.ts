@@ -24,6 +24,7 @@ import { AppDB } from '../indexed-db/db';
 export class ElectronService {
   private static readonly ASSETS_DIR = "assets";
   private static readonly DECKS_DIR = "decks";
+  private static readonly STATIC_DATA_DIR = "static_data";
   private projectOpen: BehaviorSubject<boolean>;
   private projectHomeUrl: BehaviorSubject<PersistentPath | undefined>;
   private projectUnsaved: BehaviorSubject<boolean>;
@@ -400,10 +401,12 @@ export class ElectronService {
 
   public async saveDocument(homeUrl: PersistentPath, document: Document): Promise<boolean> {
     if (!this.isElectron()) return false;
+    const documentsUrl = homeUrl.path + "/" + ElectronService.STATIC_DATA_DIR;
+    await this.createDirectory({ bookmark: homeUrl.bookmark, path: documentsUrl });
     const mimeType = document.mime ?? 'text/markdown';
     const extension = StringUtils.mimeToExtension(mimeType);
     const filename = document.name + (document.name.endsWith('.' + extension) ? '' : '.' + extension);
-    const fileUrl = homeUrl.path + '/' + filename;
+    const fileUrl = documentsUrl + '/' + filename;
 
     const blob: Blob = new Blob([document.content], { type: mimeType });
 
@@ -535,7 +538,7 @@ export class ElectronService {
     if (!this.isElectron()) {
       return;
     }
-    const documentsUrl = homeUrl.path + "/";
+    const documentsUrl = homeUrl.path + "/" + ElectronService.STATIC_DATA_DIR;
     const assetsUrl = homeUrl.path + "/" + ElectronService.ASSETS_DIR;
     const decksUrl = homeUrl.path + "/" + ElectronService.DECKS_DIR;
 
@@ -571,6 +574,7 @@ export class ElectronService {
     }
 
     // read document/markdown/css files
+    await this.createDirectory({ bookmark: homeUrl.bookmark, path: documentsUrl });
     await this.listDirectory({ bookmark: homeUrl.bookmark, path: documentsUrl }).then(documentUrls => Promise.all(documentUrls
       .filter(documentUrl => documentUrl.isFile
         && !documentUrl.name.includes('.DS_Store')
@@ -752,6 +756,7 @@ export class ElectronService {
 
   private async pruneDocuments(homeUrl: PersistentPath, currentDocuments: Document[]) {
     if (!this.isElectron()) return;
+    const documentsUrl = homeUrl.path + "/" + ElectronService.STATIC_DATA_DIR;
     const validDocumentNames = new Set<string>();
     currentDocuments.forEach(doc => {
       const mimeType = doc.mime ?? 'text/markdown';
@@ -761,7 +766,7 @@ export class ElectronService {
     });
 
     try {
-      const files = await this.listDirectory({ bookmark: homeUrl.bookmark, path: homeUrl.path });
+      const files = await this.listDirectory({ bookmark: homeUrl.bookmark, path: documentsUrl });
       for (const file of files) {
         if (file.isFile && !file.name.includes('.DS_Store') &&
           (file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.name.endsWith('.MD') || file.name.endsWith('.css') || file.name.endsWith('.CSS')
@@ -770,7 +775,7 @@ export class ElectronService {
           // Only prune if it's NOT in our valid list
           if (!validDocumentNames.has(file.name)) {
             console.log(`Pruning orphaned document: ${file.name}`);
-            await this.removeDirectory({ bookmark: homeUrl.bookmark, path: homeUrl.path + '/' + file.name });
+            await this.removeDirectory({ bookmark: homeUrl.bookmark, path: documentsUrl + '/' + file.name });
           }
         }
       }

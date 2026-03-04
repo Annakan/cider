@@ -34,14 +34,10 @@ export class DocumentsService extends IndexedDbService<Document, number> {
     const homeUrl = this.currentHomeUrl;
     const parentDir = StringUtils.getDirectoryFromUrl(absPath);
 
-    // Ensure it is in the root directory (approximate check)
-    // We assume homeUrl.path is normalized without trailing slash usually
-    // absPath usually has separator
-    // StringUtils.getDirectoryFromUrl might keep trailing slash or not. 
-    // Safer to check if absPath starts with homeUrl and has no other separators after homeUrl length + 1
-    if (parentDir !== homeUrl.path) {
-      // It might be in a subdir, which we ignore for documents (documents are root only currently?)
-      // The current openProject logic lists root directory for .md/.css
+    // Documents are now in static_data subdirectory
+    const staticDataDir = homeUrl.path + '/static_data';
+    if (parentDir !== staticDataDir) {
+      // Only watch files in static_data directory
       return;
     }
 
@@ -82,7 +78,9 @@ export class DocumentsService extends IndexedDbService<Document, number> {
     // Similar checks
     const homeUrl = this.currentHomeUrl;
     const parentDir = StringUtils.getDirectoryFromUrl(absPath);
-    if (parentDir !== homeUrl.path) return;
+    // Documents are now in static_data subdirectory
+    const staticDataDir = homeUrl.path + '/static_data';
+    if (parentDir !== staticDataDir) return;
 
     const fileName = StringUtils.lastDirectoryFromUrl(absPath);
     const nameSplit = StringUtils.splitNameAndExtension(fileName);

@@ -293,7 +293,8 @@ export class SiteSidebarComponent implements OnInit {
       // -----------------------------------------------
       // Fetch YAML data documents
       // -----------------------------------------------
-      const yamlDocuments = await this.documentsService.getAll({ mime: 'application/x-yaml' });
+      // Note: mime-wrapper returns 'text/yaml' for .yaml/.yml files
+      const yamlDocuments = await this.documentsService.getAll({ mime: 'text/yaml' });
       if (yamlDocuments.length > 0) {
         const yamlChildren: TreeNode[] = yamlDocuments.map(doc => ({
           label: doc.name,
@@ -859,7 +860,7 @@ export class SiteSidebarComponent implements OnInit {
     const randomName = `data-${Math.random().toString(36).substr(2, 9)}`;
     this.entity = {
       name: randomName,
-      mime: 'application/x-yaml',
+      mime: 'text/yaml',
       content: '# Static data\n',
     } as any;
     this.openCreateDialog(this.documentsService,
