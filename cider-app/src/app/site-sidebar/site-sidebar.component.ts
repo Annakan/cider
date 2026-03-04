@@ -291,6 +291,89 @@ export class SiteSidebarComponent implements OnInit {
       }
 
       // -----------------------------------------------
+      // Fetch YAML data documents
+      // -----------------------------------------------
+      const yamlDocuments = await this.documentsService.getAll({ mime: 'application/x-yaml' });
+      if (yamlDocuments.length > 0) {
+        const yamlChildren: TreeNode[] = yamlDocuments.map(doc => ({
+          label: doc.name,
+          data: {
+            url: '/documents/' + doc.id,
+            id: doc.id,
+            type: 'document',
+            contextMenu: [
+              {
+                label: this.translate.instant('sidebar.add-new-data-document'),
+                icon: 'pi pi-plus',
+                command: () => {
+                  this.openCreateYamlDocumentDialog();
+                }
+              },
+              {
+                label: this.translate.instant('sidebar.edit-rename-document'),
+                icon: 'pi pi-pencil',
+                command: () => {
+                  this.openEditDialog(this.documentsService, doc.id,
+                    this.translate.instant('sidebar.edit-rename-document'));
+                }
+              },
+              {
+                label: this.translate.instant('sidebar.delete-document'),
+                icon: 'pi pi-trash',
+                command: () => {
+                  this.openDeleteDialog(doc.id, this.documentsService);
+                }
+              }
+            ],
+          },
+          icon: 'pi pi-file',
+          styleClass: 'data-file',
+          draggable: false,
+          droppable: false
+        }));
+
+        updatedFiles.push({
+          label: this.translate.instant('sidebar.data-documents'),
+          data: {
+            contextMenu: [
+              {
+                label: this.translate.instant('sidebar.add-new-data-document'),
+                icon: 'pi pi-plus',
+                command: () => {
+                  this.openCreateYamlDocumentDialog();
+                }
+              }
+            ],
+          },
+          icon: 'pi pi-table',
+          children: yamlChildren,
+          expanded: true,
+          draggable: false,
+          droppable: false
+        });
+      } else {
+        updatedFiles.push({
+          label: this.translate.instant('sidebar.data-documents'),
+          data: {
+            contextMenu: [
+              {
+                label: this.translate.instant('sidebar.add-new-data-document'),
+                icon: 'pi pi-plus',
+                command: () => {
+                  this.openCreateYamlDocumentDialog();
+                }
+              }
+            ],
+          },
+          icon: 'pi pi-table',
+          children: [],
+          expanded: true,
+          draggable: false,
+          droppable: false
+        });
+      }
+
+      // -----------------------------------------------
       // Fetch decks and their templates
       // -----------------------------------------------
       await this.decksService.getAll().then(decks => {
@@ -770,6 +853,17 @@ export class SiteSidebarComponent implements OnInit {
     } as any;
     this.openCreateDialog(this.documentsService,
       this.translate.instant('sidebar.create-new-schema'), this.entity);
+  }
+
+  public openCreateYamlDocumentDialog() {
+    const randomName = `data-${Math.random().toString(36).substr(2, 9)}`;
+    this.entity = {
+      name: randomName,
+      mime: 'application/x-yaml',
+      content: '# Static data\n',
+    } as any;
+    this.openCreateDialog(this.documentsService,
+      this.translate.instant('sidebar.create-new-data-document'), this.entity);
   }
 
   public openCreateDialog(service: EntityService<any, any>, dialogTitle: string, entity?: any) {

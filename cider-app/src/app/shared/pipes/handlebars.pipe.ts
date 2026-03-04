@@ -296,6 +296,27 @@ export class HandlebarsPipe implements PipeTransform {
       return obj[key];
     });
 
+    /**
+     * {{#datalookup data.card_static_data.rarity card.rarity}}
+     *   <div style="color: {{color}}">{{label}}</div>
+     *   <span class="{{compile icon}}"></span>
+     * {{/datalookup}}
+     */
+    Handlebars.registerHelper('datalookup', function (this: any, collection: any, key: string, options: any) {
+      if (!collection || !key) return '';
+      let entry: any;
+      if (Array.isArray(collection)) {
+        const found = collection.find((item: any) => {
+          return Object.keys(item)[0] === key;
+        });
+        if (found) entry = found[key];
+      } else if (typeof collection === 'object') {
+        entry = collection[key];
+      }
+      if (!entry) return '';
+      return options.fn(entry);
+    });
+
   }
 
   transform(handlebars: string, assetUrls?: any): string {

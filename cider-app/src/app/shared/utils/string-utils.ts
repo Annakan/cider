@@ -88,6 +88,9 @@ export default class StringUtils {
         if (extension == 'markdown') {
             return 'md';
         }
+        if (!extension && (mime === 'application/x-yaml' || mime === 'text/yaml')) {
+            return 'yaml';
+        }
         return extension;
     }
 
@@ -101,7 +104,11 @@ export default class StringUtils {
         if (!ext) {
             return '';
         }
-        return mimeTypes.getType(ext);
+        const mime = mimeTypes.getType(ext);
+        if (!mime && (ext === 'yaml' || ext === 'yml')) {
+            return 'application/x-yaml';
+        }
+        return mime;
     }
 
     /**

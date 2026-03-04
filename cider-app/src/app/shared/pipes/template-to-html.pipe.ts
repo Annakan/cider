@@ -21,23 +21,23 @@ export class CardToHtmlPipe implements PipeTransform {
     let self = this;
   }
 
-  transform(template: CardTemplate, card: Card, assetUrls?: any, uuid?: string): SafeHtml {
+  transform(template: CardTemplate, card: Card, assetUrls?: any, uuid?: string, staticData?: Record<string, any>): SafeHtml {
     if (!template || !card) {
       return '';
     }
     return this.safeHtmlAndStyle(card, 
-      this.executeHandlebars(template.html, card, assetUrls), 
-      this.executeHandlebars(template.css, card, assetUrls),
+      this.executeHandlebars(template.html, card, assetUrls, staticData), 
+      this.executeHandlebars(template.css, card, assetUrls, staticData),
       uuid);
   }
 
-  private executeHandlebars(htmlTemplate: string, card: Card, assetUrls?: any): string {
+  private executeHandlebars(htmlTemplate: string, card: Card, assetUrls?: any, staticData?: Record<string, any>): string {
     if (!htmlTemplate) {
       return '';
     }
     let template = Handlebars.compile(htmlTemplate);
     try {
-      return template({card: card, assets: assetUrls});
+      return template({card: card, assets: assetUrls, data: staticData || {}});
     } catch(error) {
       return '';
     }

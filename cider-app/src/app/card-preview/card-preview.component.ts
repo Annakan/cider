@@ -7,6 +7,7 @@ import { AsyncSubject, lastValueFrom } from 'rxjs';
 import { RenderCacheService } from '../data-services/services/render-cache.service';
 import { CardToHtmlPipe } from '../shared/pipes/template-to-html.pipe';
 import { ImageRendererService } from '../data-services/services/image-renderer.service';
+import { StaticDataService } from '../data-services/services/static-data.service';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import GeneralUtils from '../shared/utils/general-utils';
 import { error } from 'console';
@@ -29,6 +30,7 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
   initialWidth: number = 0;
   initialHeight: number = 0;
   assetUrls: any;
+  staticData: Record<string, any> = {};
   uuid: string = uuid();
   cachedImageUrl?: string;
   invalidTemplate: boolean = false;
@@ -39,6 +41,7 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
     private assetsService: AssetsService,
     private renderCacheService: RenderCacheService,
     private imageRendererService: ImageRendererService,
+    private staticDataService: StaticDataService,
     private element: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
     private cardToHtmlPipe: CardToHtmlPipe,
@@ -66,6 +69,9 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
   ngOnInit(): void {
     this.assetsService.getAssetUrls().subscribe(assetUrls => {
       this.assetUrls = assetUrls;
+    });
+    this.staticDataService.getStaticData().subscribe(data => {
+      this.staticData = data;
     });
   }
 
@@ -105,7 +111,7 @@ export class CardPreviewComponent implements OnInit, AfterViewChecked, OnChanges
   }
 
   public getHash(): number {
-    const html = this.cardToHtmlPipe.transform(this.template, this.card, this.assetUrls);
+    const html = this.cardToHtmlPipe.transform(this.template, this.card, this.assetUrls, undefined, this.staticData);
     return this.renderCacheService.calculateHash((html as any).changingThisBreaksApplicationSecurity);
   }
 

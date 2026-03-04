@@ -576,7 +576,9 @@ export class ElectronService {
         && !documentUrl.name.includes('.DS_Store')
         && (documentUrl.name.includes('.md') || documentUrl.name.includes('.markdown')
           || documentUrl.name.includes('.MD')
-          || documentUrl.name.includes('.css') || documentUrl.name.includes('.CSS'))
+          || documentUrl.name.includes('.css') || documentUrl.name.includes('.CSS')
+          || documentUrl.name.includes('.yaml') || documentUrl.name.includes('.yml')
+          || documentUrl.name.includes('.json'))
       ).map(async documentUrl => {
         const documentNameSplit = StringUtils.splitNameAndExtension(documentUrl.name);
         const documentName = documentNameSplit.name;
@@ -762,7 +764,8 @@ export class ElectronService {
       const files = await this.listDirectory({ bookmark: homeUrl.bookmark, path: homeUrl.path });
       for (const file of files) {
         if (file.isFile && !file.name.includes('.DS_Store') &&
-          (file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.name.endsWith('.MD') || file.name.endsWith('.css') || file.name.endsWith('.CSS'))) {
+          (file.name.endsWith('.md') || file.name.endsWith('.markdown') || file.name.endsWith('.MD') || file.name.endsWith('.css') || file.name.endsWith('.CSS')
+            || file.name.endsWith('.yaml') || file.name.endsWith('.yml') || file.name.endsWith('.json'))) {
 
           // Only prune if it's NOT in our valid list
           if (!validDocumentNames.has(file.name)) {
