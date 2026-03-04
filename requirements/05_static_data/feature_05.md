@@ -1,46 +1,34 @@
+# Static data for cards
 
 When creating a card game there is often recurring static data that affect cards and decks.
 
-for instance card type might be associated to icons, card rarity to symbols and or backgound colors.
+For instance card type might be associated to icons, card rarity to symbols and or backgound colors.
 
-It would be useful to be able to store these data in a structured YAML file.
+A lot of data goes together, a given rarity implies a color at least for the background or the text, an icon, etc.
 
-For instance a document `RarityProps` with this content:
+It would be useful to be able to store these data together and avoid duplication, for instance in a structured YAML file.
 
-```yaml
-- C:
-    name: common
-    color: "#888"
-    base_difficulty: 10
-- U:
-    name: uncommon
-    color: "#00F"
-    base_difficulty: 20
-- R:
-    name: Rare
-    color: "#F00"
-    base_difficulty: 20
-
-```
-
-Could then be used in the template with few helpers
+A document like @include card_static_data.yaml could then be used in the template with few helpers, something like :
 
 ```handlebars
-{{#with RarityProps c}}
+{{#lookup card_static_data rarity c}}
 {{name}}
 {{color}}
 {{base_difficulty}}
-{{/with}}
+{{/lookup}}
 ```
 or
 
 ```handlebars
-{{#with RarityProps card.rarity}}
+{{#lookup card_static_data rarity card.rarity}}
 {{name}}
 {{color}}
+{{compile icon}}
 {{base_difficulty}}
-{{/with}}
+{{/lookup}}
+```
 
-rarity being a string attribute of the card
+rarity being a string attribute of the card.
 
+Ideally such documents ahould be able to be defined both at the deck level an the global level.
 

@@ -1,23 +1,26 @@
 constants:
-    - &common_color "#888"
-    - &uncommon_color "#00F"
-    - &rare_color "#F00"
-    - &legendary_color "#FF00FF"
-    - &common_base_difficulty 10
-    - &uncommon_base_difficulty 20
-    - &rare_base_difficulty 30
-    - &legendary_base_difficulty 40
+  - &common_color "#888"
+  - &uncommon_color "#00F"
+  - &rare_color "#F00"
+  - &legendary_color "#FF00FF"
+  - &common_base_difficulty 10
+  - &uncommon_base_difficulty 20
+  - &rare_base_difficulty 30
+  - &legendary_base_difficulty 40
 
 rarity:
   - C:
       label: Common
       color: &common_color
       base_difficulty: &common_base_difficulty
+      icon: "ss ss-inv"
   - U:
       label: Uncommon
       color: &uncommon_color
       base_difficulty: &uncommon_base_difficulty
+      icon: "ss ss-mor ss-rare ss-grad ss-3x"
   - R:
       label: Rare
       color: &rare_color
       base_difficulty: &rare_base_difficulty
+      icon: "ss ss-isd ss-foil ss-grad ss-3x"
